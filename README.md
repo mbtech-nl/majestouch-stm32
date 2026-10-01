@@ -62,9 +62,9 @@ model code (FKB**N**…, "N-key rollover using separate diodes"); the cheaper
 2KRO models without it work too, but ghost on some key combinations.
 
 Compare your stock controller with the pinout below before fitting. The QMK
-definition currently has the ANSI layout only; ISO boards work electrically
-but need an ISO layout for the two extra keys. The Majestouch TKL uses a
-different header and does not fit.
+definition has the ANSI layout; ISO boards work electrically, but the two
+extra ISO keys need a layout of your own. The Majestouch TKL uses a different
+header and does not fit.
 
 ## Repository
 
