@@ -1,0 +1,4 @@
+(version 1)
+(rule "THT pads: one thermal spoke is enough"
+  (condition "A.Type == 'Pad' && A.Pad_Type == 'Through-hole'")
+  (constraint min_resolved_spokes 1))

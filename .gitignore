@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+
+# KiCad per-user/local state and backups
+*.kicad_prl
+fp-info-cache
+*-backups/
+_autosave-*
+*.lck
+\#auto_saved_files#
+
+# fab outputs are built on demand
+kicad/fab/
+

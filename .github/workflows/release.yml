@@ -1,0 +1,64 @@
+name: Release
+
+# Pushing a tag like v0.1 validates the design, builds the Gerber package and
+# attaches it to the GitHub release for that tag (created if it doesn't exist
+# yet). "Run workflow" builds the same files without releasing anything.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  fab:
+    runs-on: ubuntu-latest
+    container:
+      image: kicad/kicad:7.0.11
+      options: --user root   # checkout needs to write the runner-owned workspace
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate (schematic, firmware pins, board DRC)
+        env:
+          HOME: /tmp
+        run: python3 tools/check.py
+
+      - name: Build the fabrication package
+        env:
+          HOME: /tmp
+          FAB_REV: ${{ github.ref_name }}
+          FAB_OUT: /tmp/fab
+        run: |
+          python3 tools/fab.py
+          cp /tmp/fab/bom.csv "/tmp/fab/majestouch_stm32-bom-${FAB_REV}.csv"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: fab-${{ github.ref_name }}
+          path: |
+            /tmp/fab/majestouch_stm32-gerbers-*.zip
+            /tmp/fab/majestouch_stm32-bom-*.csv
+          if-no-files-found: error
+
+  release:
+    needs: fab
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: fab-${{ github.ref_name }}
+          path: fab
+
+      - name: Attach to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            gh release create "$TAG" --repo "$REPO" --title "$TAG" --verify-tag \
+              --notes "Gerbers + drill files (for any PCB fab) and BOM for $TAG."
+          fi
+          gh release upload "$TAG" fab/* --repo "$REPO" --clobber
