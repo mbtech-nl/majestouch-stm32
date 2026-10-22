@@ -224,6 +224,15 @@ Tested with the first board built from these files, in the same keyboard:
 - Num/Caps/Scroll LEDs follow the host's lock state;
 - first flash over BOOT + RST, later ones by holding Esc while plugging in.
 
+<p align="center">
+  <img src="docs/photos/controller-built.jpg" alt="The assembled board, component side: STM32F072, LDO, USB ESD chip, LED resistors and the two 2.0 mm header rows" width="49%">
+  <img src="docs/photos/controller-installed.jpg" alt="The board installed in the keyboard, outward side up, next to the lock LEDs and the USB cable connector" width="49%">
+</p>
+<p align="center">
+  <img src="docs/photos/controller-vs-stock.jpg" alt="The stock Holtek controller above the new STM32 board: same size, same header" width="60%">
+</p>
+<p align="center"><sub>The first board: assembled, installed in place of the stock controller (oriented like the photo of the stock one above), and next to the stock controller it replaces. Forgive the prototype-quality soldering.</sub></p>
+
 ## References
 
 - [Controller matrix traces](https://deskthority.net/wiki/Controller_matrix_traces)
