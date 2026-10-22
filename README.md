@@ -64,7 +64,7 @@ header and does not fit.
 ## Repository
 
 ```
-kicad/                       KiCad 7 project (schematic, board, design rules)
+kicad/                       KiCad 9 project (schematic, board, design rules)
 firmware/majestouch_stm32/   QMK keyboard definition
 tools/check.py               validation: schematic, firmware pins and board
 tools/fab.py                 fabrication package (Gerbers, drill, BOM)
@@ -73,7 +73,7 @@ docs/                        board renders, photos of the stock controller
 
 `tools/check.py` checks the schematic against the STM32 datasheet pinout and
 the Filco header map, checks that every pin in the QMK definition lands on the
-right net, and runs KiCad's design rule check on the board. It needs KiCad 7
+right net, and runs KiCad's design rule check on the board. It needs KiCad 9
 (`kicad-cli` and the `pcbnew` Python module).
 
 ## Header pinout

@@ -17,7 +17,7 @@ jobs:
   fab:
     runs-on: ubuntu-latest
     container:
-      image: kicad/kicad:7.0.11
+      image: kicad/kicad:9.0.9
       options: --user root   # checkout needs to write the runner-owned workspace
     steps:
       - uses: actions/checkout@v7

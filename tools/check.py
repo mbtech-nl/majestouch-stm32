@@ -13,7 +13,7 @@
    clean (as saved). Headless pcbnew can't see the footprint libraries, so
    "lib_footprint_issues" is ignored.
 
-Exits non-zero on any error. Needs KiCad 7 (kicad-cli, and the pcbnew Python
+Exits non-zero on any error. Needs KiCad 9 (kicad-cli, and the pcbnew Python
 module for the board checks).
 """
 import argparse
@@ -222,7 +222,7 @@ def check_board(pin_net):
 
     with tempfile.TemporaryDirectory() as tmp:
         rpt = os.path.join(tmp, 'drc.rpt')
-        pcbnew.WriteDRCReport(board, rpt, pcbnew.EDA_UNITS_MILLIMETRES, True)
+        pcbnew.WriteDRCReport(board, rpt, pcbnew.EDA_UNITS_MM, True)
         report = open(rpt).read()
     found = re.findall(r'^\[(\w+)\]: (.*)$', report, re.M)
     issues = [(k, msg) for k, msg in found if k != 'lib_footprint_issues']
