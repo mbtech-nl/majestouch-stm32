@@ -13,19 +13,26 @@ definition is included.
 
 ## Background
 
-I was looking for a replacement for my 2010 Majestouch, but gave it a full
-service and fresh keycaps instead. Reading up on it, I came across the
-[Kitten Paw](https://deskthority.net/wiki/Costar_replacement_controllers)
+My 2010 Majestouch was getting on, so I went looking for a replacement.
+Nothing on offer today quite suited my taste, and every switch still worked.
+Maybe a good clean and a fresh set of keycaps would hold me over for the next
+15 years?
+
+Still, all those modern keyboards did NKRO over USB, and that reminded me:
+mine used to do NKRO too, back when it was plugged in over PS/2. PS/2 left my
+desk a long time ago, and over USB the stock controller only does 6KRO.
+Reading up on it, I came across the [Kitten Paw](https://deskthority.net/wiki/Costar_replacement_controllers)
 (ATmega32U2 + 74HC154), the replacement controller for Costar boards such as
-the Filco, about a decade after everyone else did, and
+the Filco, about a decade after everyone else did. I also found
 [Majestouch-2-TKL-Replacement-Controller](https://github.com/calliah333/Majestouch-2-TKL-Replacement-Controller),
 which does the same for the Majestouch 2 TKL with an STM32.
 
-PS/2 left my desk a long time ago, and over USB the stock controller only does
-6KRO. I wanted my NKRO back, so I tried making one myself. It's my first open
-source hardware project, and the design turned out to be quite
-straightforward. It takes the STM32 approach to the full-size board and keeps
-it simple:
+So I designed my own replacement controller, taking that STM32 approach to
+the full-size board. It's my first open source hardware project, and the
+design turned out to be quite straightforward. Did I need NKRO? Honestly, I
+never noticed it was missing. Am I happy with the result? Definitely.
+
+The board keeps it simple:
 
 - **STM32F072CBT6**: crystal-less USB (HSI48 + clock recovery), internal
   flash, ROM bootloader with USB DFU, and 5 V-tolerant pins for the lock LEDs.
