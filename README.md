@@ -5,6 +5,11 @@ around an STM32F072. It replaces the stock daughterboard, plugs into the same
 36-pin header on the main PCB and runs [QMK](https://qmk.fm); the QMK keyboard
 definition is included.
 
+**Download:** the [latest release](https://github.com/mbtech-nl/majestouch-stm32/releases/latest)
+has everything needed to build the controller: the Gerber package to order the board from
+any PCB fab, the parts list (BOM) and the ready-built QMK firmware (`.bin`).
+See [Making one](#making-one) for how to order, assemble and flash it.
+
 <p align="center">
   <img src="docs/renders/front.png" alt="Component side: STM32F072 at 45 degrees between the two header rows, USB ESD chip, LDO and LED resistors" width="49%">
   <img src="docs/renders/back.png" alt="Outward side: decoupling capacitors, BOOT and RST jumper holes, name, version and a QR code to this repository" width="49%">
