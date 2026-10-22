@@ -5,11 +5,6 @@ around an STM32F072. It replaces the stock daughterboard, plugs into the same
 36-pin header on the main PCB and runs [QMK](https://qmk.fm); the QMK keyboard
 definition is included.
 
-> [!WARNING]
-> **Untested.** The first boards are on order and have not been built or
-> verified on a keyboard yet. Order and build at your own risk until this
-> notice is gone.
-
 <p align="center">
   <img src="docs/renders/front.png" alt="Component side: STM32F072 at 45 degrees between the two header rows, USB ESD chip, LDO and LED resistors" width="49%">
   <img src="docs/renders/back.png" alt="Outward side: decoupling capacitors, BOOT and RST jumper holes, name, version and a QR code to this repository" width="49%">
@@ -146,10 +141,6 @@ a QR code linking to this repository.
 
 ## Making one
 
-> [!CAUTION]
-> Seriously: don't build one yet. Wait until the first boards have been
-> assembled and tested, and this banner is gone.
-
 ### Board
 
 ```sh
@@ -221,6 +212,12 @@ Measured on the target keyboard before ordering:
 - no connection from VBUS to any matrix pin on the main PCB;
 - lock LED anodes on +5 V, active low;
 - enough height between the boards; stock board 1.2 mm thick.
+
+Tested with the first board built from these files, in the same keyboard:
+
+- every key registers, including many keys at once (NKRO);
+- Num/Caps/Scroll LEDs follow the host's lock state;
+- first flash over BOOT + RST, later ones by holding Esc while plugging in.
 
 ## References
 
