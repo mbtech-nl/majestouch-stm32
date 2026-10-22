@@ -8,7 +8,7 @@
    Filco header map and STM32F072 pin tables written out here from the
    datasheet (DS9826), independently of the KiCad symbols.
 2. Firmware: every pin in firmware/majestouch_stm32 (keyboard.json matrix,
-   keyboard.c lock LEDs) must land on the right net in the schematic.
+   majestouch_stm32.c lock LEDs) must land on the right net in the schematic.
 3. Board: footprints and pad nets match the schematic, and KiCad's DRC is
    clean (as saved). Headless pcbnew can't see the footprint libraries, so
    "lib_footprint_issues" is ignored.
@@ -44,7 +44,7 @@ HEADER = {
 }
 ROWS = [f'ROW_{c}' for c in 'ABCDEFGHIJKLMNOPQR']
 COLS = [f'COL{i}' for i in range(8)]
-LEDS = ['LED_NUM', 'LED_CAPS', 'LED_SCRL']   # keyboard.c order: num, caps, scroll
+LEDS = ['LED_NUM', 'LED_CAPS', 'LED_SCRL']   # majestouch_stm32.c order: num, caps, scroll
 
 # STM32F072 LQFP-48 pinout (DS9826) and its 5 V-tolerant (FT) pins in use here
 STM32_PIN = {name: i + 1 for i, name in enumerate(
@@ -191,14 +191,14 @@ def check_firmware(pin_net):
             if net_of(p) != net:
                 error(f'keyboard.json: {kind}[{i}] = {p} is {net_of(p)} in the schematic, expected {net}')
 
-    src = open(os.path.join(FW, 'keyboard.c')).read()
+    src = open(os.path.join(FW, 'majestouch_stm32.c')).read()
     m = re.search(r'lock_leds\[\]\s*=\s*\{([^}]*)\}', src)
     leds = [p.strip() for p in m.group(1).split(',')] if m else []
     if len(leds) != len(LEDS):
-        error(f'keyboard.c: lock_leds = {leds}, expected {len(LEDS)} pins')
+        error(f'majestouch_stm32.c: lock_leds = {leds}, expected {len(LEDS)} pins')
     for p, led in zip(leds, LEDS):
         if net_of(p) != led + '_DRV':
-            error(f'keyboard.c: lock LED {p} is {net_of(p)} in the schematic, expected {led}_DRV')
+            error(f'majestouch_stm32.c: lock LED {p} is {net_of(p)} in the schematic, expected {led}_DRV')
     print(f'firmware: {len(ROWS)} rows, {len(COLS)} cols, {len(leds)} LEDs')
 
 
