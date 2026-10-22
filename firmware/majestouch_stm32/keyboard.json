@@ -7,7 +7,7 @@
     "usb": {
         "vid": "0xFEED",
         "pid": "0x4651",
-        "device_version": "0.1.0"
+        "device_version": "1.0.0"
     },
     "diode_direction": "COL2ROW",
     "matrix_pins": {
