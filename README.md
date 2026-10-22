@@ -151,8 +151,9 @@ python3 fab.py
 
 This builds `kicad/fab/majestouch_stm32-gerbers-<rev>.zip` (Gerbers and drill
 files, accepted by any PCB fab) plus `bom.csv` with the parts used and what an
-equivalent needs. Tagged releases have both attached, built and validated by GitHub
-Actions (`.github/workflows/release.yml`).
+equivalent needs. Tagged releases have both attached, together with the QMK
+firmware, built and validated by GitHub Actions
+(`.github/workflows/release.yml`).
 
 Order settings: 2 layers, FR-4, 1.2 mm (the stock board's thickness; 1.6 mm
 fits too), HASL lead-free or ENIG. The design stays within standard rules
@@ -190,7 +191,10 @@ place of the stock controller.
 
 ### Firmware
 
-Copy `firmware/majestouch_stm32` into `qmk_firmware/keyboards/`, then:
+Each release has a ready-built `majestouch_stm32-qmk-<version>.bin` with the
+default keymap; the release notes name the QMK version it was built with. To
+build it yourself, copy `firmware/majestouch_stm32` into
+`qmk_firmware/keyboards/`, then:
 
 ```sh
 qmk compile -kb majestouch_stm32 -km default
@@ -198,8 +202,9 @@ qmk compile -kb majestouch_stm32 -km default
 
 First flash: bridge the BOOT jumper while plugging in USB (or bridge BOOT and
 tap RESET) to start the STM32's DFU bootloader, then
-`qmk flash -kb majestouch_stm32 -km default`. After that, hold Esc while
-plugging in to get back to the bootloader.
+`qmk flash -kb majestouch_stm32 -km default`, or for the release binary
+`dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D majestouch_stm32-qmk-<version>.bin`.
+After that, hold Esc while plugging in to get back to the bootloader.
 
 The default keymap is a standard full-size ANSI layout. The Caps/Num/Scroll
 LEDs follow the host's lock state.

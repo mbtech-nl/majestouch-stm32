@@ -1,12 +1,17 @@
 name: Release
 
 # Pushing a tag like v0.1 validates the design, builds the Gerber package and
-# attaches it to the GitHub release for that tag (created if it doesn't exist
-# yet). "Run workflow" builds the same files without releasing anything.
+# the QMK firmware and attaches them to the GitHub release for that tag
+# (created if it doesn't exist yet). "Run workflow" builds the same files
+# without releasing anything.
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+
+env:
+  # The QMK release the firmware is built against (and was tested with).
+  QMK_VERSION: 0.34.6
 
 jobs:
   fab:
@@ -39,8 +44,40 @@ jobs:
             /tmp/fab/majestouch_stm32-bom-*.csv
           if-no-files-found: error
 
+  firmware:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/qmk/qmk_cli
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/checkout@v7
+        with:
+          repository: qmk/qmk_firmware
+          ref: ${{ env.QMK_VERSION }}
+          path: qmk_firmware
+          submodules: recursive
+
+      - name: Build the QMK firmware
+        env:
+          QMK_HOME: ${{ github.workspace }}/qmk_firmware
+          FW_REV: ${{ github.ref_name }}
+        run: |
+          git config --global --add safe.directory '*'
+          cp -r firmware/majestouch_stm32 qmk_firmware/keyboards/
+          cd qmk_firmware
+          qmk compile -kb majestouch_stm32 -km default
+          mkdir -p /tmp/fw
+          cp majestouch_stm32_default.bin "/tmp/fw/majestouch_stm32-qmk-${FW_REV}.bin"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: firmware-${{ github.ref_name }}
+          path: /tmp/fw/majestouch_stm32-qmk-*.bin
+          if-no-files-found: error
+
   release:
-    needs: fab
+    needs: [fab, firmware]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     permissions:
@@ -48,8 +85,9 @@ jobs:
     steps:
       - uses: actions/download-artifact@v8
         with:
-          name: fab-${{ github.ref_name }}
-          path: fab
+          pattern: '*-${{ github.ref_name }}'
+          merge-multiple: true
+          path: out
 
       - name: Attach to the release
         env:
@@ -59,6 +97,8 @@ jobs:
         run: |
           if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
             gh release create "$TAG" --repo "$REPO" --title "$TAG" --verify-tag \
-              --notes "Gerbers + drill files (for any PCB fab) and BOM for $TAG."
+              --notes "Gerbers + drill files (for any PCB fab), BOM and QMK firmware for $TAG.
+
+          The firmware \`.bin\` is built from \`firmware/majestouch_stm32\` against QMK $QMK_VERSION and, as it contains QMK, is licensed GPL-2.0-or-later. Flash it with \`dfu-util -a 0 -d 0483:df11 -s 0x08000000:leave -D majestouch_stm32-qmk-$TAG.bin\`."
           fi
-          gh release upload "$TAG" fab/* --repo "$REPO" --clobber
+          gh release upload "$TAG" out/* --repo "$REPO" --clobber
